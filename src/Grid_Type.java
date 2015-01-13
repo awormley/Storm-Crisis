@@ -1,0 +1,10 @@
+import java.awt.Image;
+import java.awt.image.BufferedImage;
+
+
+public abstract class Grid_Type {
+	public BufferedImage tile;
+	public String name;
+	abstract Image getTile(); //returns image of tile
+	abstract String getName(); //returns type of tile (grass, forest, etc)
+}

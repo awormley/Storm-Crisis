@@ -1,0 +1,49 @@
+import java.awt.Image;
+
+
+public abstract class Plant extends Drawable{
+	private String name;
+	private String[] description;
+	private int capacity;
+	private Grid_Type type;
+	private BufferedImage[] idle;
+	private BufferedImage[] eat;
+	private int instrument; //0,1,2,3 we'll see
+	private Animal wildlifeType;
+	private int size;
+	
+	public Plant(int x, int y){
+		super(x,y);
+	}
+	public String getName(){
+		return name;
+	}
+	public String[] getDesc(){
+		return description;
+	}
+	public int getCapacity(){ //capacity is changed by drink not directly
+		return capacity;
+	}
+	public Image[] getIdleImg(){
+		return idle;
+	}
+	public Image[] getEatImg(){
+		return eat;
+	}
+	public int getInstrument(){
+		return instrument;
+	}
+	public Animal getWildlifeType(){
+		return wildlifeType;
+	}
+	public int getSize(){
+		return size;
+	}
+	public void setSize(int s){
+		size = s;
+	}
+	public void Drink(){
+		
+	}
+	
+}

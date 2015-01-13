@@ -1,0 +1,44 @@
+import java.awt.Color;
+import java.awt.Graphics;
+import java.awt.Image;
+import java.io.File;
+import java.io.IOException;
+
+import javax.imageio.ImageIO;
+import javax.swing.JPanel;
+
+
+public class Menu{
+	
+	public int numTools = 5;
+	
+	public Tool[] Tool_Box = new Tool[numTools];
+	private String Title;
+	public String[] Tool_Desc; 
+	public Image Background; 
+	public Image hide_Tab; 
+	public int Hide_Delay;
+	
+	
+	public Tool[] getToolBox(){
+		return Tool_Box;
+	}
+	
+	public void Pause(){}
+	
+	public void Use_Element(){}
+	
+	public void checkHide(){}
+	
+	public Menu(){
+		//JFrame grid = new JFrame();
+		Tool_Box[1] = new ButterflyWeedTool();
+		Tool_Box[0] = new ChristmasFernTool();
+		Tool_Box[3] = new SpicebushTool();
+		Tool_Box[2] = new ScarletOakTool();
+		Tool_Box[4] = new Lawnmower();
+	}
+}
+	
+
+

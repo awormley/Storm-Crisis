@@ -1,0 +1,19 @@
+
+public class Water extends Drawable{
+	private int size;
+	private int direction;
+	public Water(int x, int y){
+		super(x,y);
+		size = 10; //default size subject to change
+		direction = 0; //0 N, 1 E, 2 S, 3 W
+		BufferedImage img;
+		try {
+		    img = ImageIO.read(new File("sprites\puddle.png"));
+		} catch (IOException e) {
+		}
+	}
+	public void draw(){
+		
+	}
+	
+}

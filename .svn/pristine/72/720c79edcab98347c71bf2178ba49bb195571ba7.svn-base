@@ -1,0 +1,42 @@
+import java.awt.Graphics;
+import java.awt.Label;
+import java.awt.image.BufferedImage;
+
+ 
+public class endScreen {
+	
+	public  BufferedImage DelDot_Engineer;
+	public  BufferedImage medal;
+	public BufferedImage final_background;
+	public Label Score_display;
+	int score;
+	boolean win;
+	
+	public endScreen(int ascore, boolean win){
+		score = ascore;
+	//	win = awin; -> dont know of any other references to awin?
+	}
+	
+	public void paintComponent(Graphics g){
+		/*
+		try {
+			DelDot_Engineer = ImageIO.read(new File("engineer.png"));
+			
+			if(score>1000)
+				medal = ImageIO.read(new File("gold.png"));
+			else if(score<500)
+				medal = ImageIO.read(new File("bronze.png"));
+			else
+				medal = ImageIO.read(new File("silver.png"));
+			
+			final_background = ImageIO.read(new File("final_background.png"));
+			
+		} catch (IOException e) {
+			e.printStackTrace();
+		}  */
+
+		
+		
+		System.out.println("Game over");
+	}
+}

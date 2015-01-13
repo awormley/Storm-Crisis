@@ -1,0 +1,28 @@
+import java.awt.Image;
+import java.io.File;
+import java.io.IOException;
+
+import javax.imageio.ImageIO;
+
+
+public class Queue_Of_Care extends Grid_Type{
+	public Queue_Of_Care(){
+		try {
+			//tile = ImageIO.read(new File("img/Images/Placeholders/pathTile.png"));
+			tile = ImageIO.read(new File("img/Images/path.png"));
+			
+		} catch (IOException e) {
+			// TODO Auto-generated catch block
+			e.printStackTrace();
+		}
+	}
+	@Override
+	public Image getTile() {
+		return tile;
+	}
+
+	@Override
+	public String getName() {
+		return "Queue of Care";
+	}
+}

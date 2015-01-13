@@ -1,0 +1,36 @@
+import java.awt.image.BufferedImage;
+import java.io.File;
+import java.io.IOException;
+
+import javax.imageio.ImageIO;
+
+
+public class JapaneseBarberry extends Invasive{
+	BufferedImage[] id = new BufferedImage[5];
+	BufferedImage[] ea = new BufferedImage[5];
+	public JapaneseBarberry(int x, int y){
+		super(x,y);
+		
+		for(int i = 0; i < 5; i++){
+			try {
+				id[i] = ImageIO.read(new File("img/Images/Placeholders/Invasive_A.png"));
+				//System.out.println("Got plant d");
+			} catch (IOException e) {
+				System.out.println("Couldnt find plant D");
+				// TODO Auto-generated catch block
+				e.printStackTrace();
+			}
+			try {
+				ea[i] = ImageIO.read(new File("img/Images/Placeholders/Invasive_A.png"));
+			} catch (IOException e) {
+				// TODO Auto-generated catch block
+				e.printStackTrace();
+			}
+		}
+
+		setName("Japanese Barberry");
+		setup(2,2,0,id,ea);
+		
+	}
+	
+}

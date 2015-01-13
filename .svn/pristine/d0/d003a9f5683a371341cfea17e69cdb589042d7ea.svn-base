@@ -1,0 +1,77 @@
+import java.awt.Graphics;
+import java.awt.event.ActionEvent;
+import java.awt.event.ActionListener;
+import java.awt.image.BufferedImage;
+import java.io.File;
+import java.io.IOException;
+
+import javax.imageio.ImageIO;
+import javax.swing.AbstractButton;
+import javax.swing.JButton;
+import javax.swing.JFrame;
+import javax.swing.JPanel;
+
+public class startScreen extends JPanel implements ActionListener{
+	//If you put images inside the src folder it won't find them, put them in the img/Images folder -- go look at Grass_Tile for examples of working paths
+	public BufferedImage Title_Screen_background;
+	public JButton startButton;
+	public JButton nextButton;
+	public BufferedImage Description_Screen;
+	public BufferedImage curImage;
+	public boolean next;
+	public int height = 600;
+	public int width = 800;
+		
+	public startScreen(){
+		try {
+    		Title_Screen_background = ImageIO.read(new File("img/guyonright.png"));
+    		Description_Screen = ImageIO.read(new File("src/DescriptionScreen.png"));
+    	} catch (IOException e) {
+    		e.printStackTrace();
+    	}
+		
+		startButton = new JButton("Start");
+		startButton.setVerticalAlignment(AbstractButton.TOP);
+		startButton.addActionListener(this);
+		nextButton = new JButton("Next");
+		nextButton.setVerticalAlignment(AbstractButton.TOP);
+		nextButton.addActionListener(this);
+		add(startButton);
+		setImage(Title_Screen_background);
+	}
+	
+	public void paintComponent(Graphics g){
+		super.paintComponent(g);
+		g.drawImage(curImage,  0, 0, this);
+		
+	}
+	
+	public void actionPerformed(ActionEvent e){
+		repaint();
+		Object src = e.getSource();
+		if(src == startButton){
+			removeAll();
+			add(nextButton);
+			revalidate();
+			setImage(Description_Screen);
+		} else if(src == nextButton){
+			JFrame frame = new JFrame();
+			frame.add(new Grid());
+			frame.setSize(800, 600);
+		    frame.setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
+		    frame.setVisible(true);
+		}
+	}
+	
+	private void setImage(BufferedImage image){
+		curImage = image;
+	}
+
+	public static void main(String[] args){
+		JFrame frame = new JFrame();
+		frame.add(new startScreen());
+		frame.setSize(800, 600);
+	    frame.setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
+	    frame.setVisible(true);
+	}
+}

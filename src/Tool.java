@@ -1,0 +1,26 @@
+import java.awt.image.BufferedImage;
+import java.io.File;
+import java.io.IOException;
+
+import javax.imageio.ImageIO;
+
+
+public  class Tool {
+	public Tool(){
+		
+	}
+
+	public String Name;
+	public BufferedImage Icon;
+	
+	public void use(){}
+	
+	public BufferedImage getIcon(){
+		return Icon;
+	}
+	public int getCooldown(){
+		return 0;
+	}
+	
+
+}

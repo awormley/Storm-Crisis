@@ -1,0 +1,72 @@
+import java.awt.Color;
+import java.util.Random;
+import java.util.Vector;
+
+import javax.swing.JComponent;
+import javax.swing.JFrame;
+
+
+public class RunMe {
+	
+	public static void main(String[] args){
+		//I WORK MOFUGA
+		JFrame gameWindow = new JFrame();
+		Grid gameGrid = new Grid();
+		Vector<Drawable> holder = new Vector(50);
+		//Drawable[] dirtySolution = new Drawable[100];
+		
+		//READ THE COMMENT ->
+
+		//gameWindow.getContentPane().add(menu);
+		gameWindow.getContentPane().add(gameGrid);  //Only one of these two shows for some reason that I don't have time to investigate, switching lines around shows other one.
+		
+		
+//		JComponent newContentPane = new LayeredPaneDemo();
+//        newContentPane.setOpaque(true); //content panes must be opaque
+//        frame.setContentPane(newContentPane);
+	//READ ->
+		
+		
+		gameWindow.setBackground(Color.gray);
+		gameWindow.setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
+		gameWindow.setSize(1195, 830); //magic numbers xy, need 1344 min to have 20x20 of the 64x64 tiles though
+		gameWindow.setVisible(true);
+		showIntro();
+		Random r = new Random();
+		
+		while (gameGrid.get_Score()>0 ){
+
+		//	menu.Draw_Menu();
+			
+			//next four lines test functionality to grow and mow tiles
+			if(r.nextInt(500000) == 0)
+				gameGrid.grow_tile(r.nextInt(14), r.nextInt(10));
+			if(r.nextInt(1000000) == 0)
+				gameGrid.mow_tile(r.nextInt(14), r.nextInt(10));
+			if(r.nextInt(2000000) == 0)
+				gameGrid.addPlant(r.nextInt(7),r.nextInt(14),r.nextInt(10));
+			if(r.nextInt(5000000) == 0)
+				gameGrid.addWater(r.nextInt(4));
+//			if(r.nextInt(5000000) == 0){   //This will test water moving... concurrent modification exception on the iterator right below this line
+//				for(Drawable d: gameGrid.foreground){
+//					d.move(gameGrid);
+//				}
+//			}
+					
+			//next lines test adding plants
+			
+			
+			gameGrid.updateGrid(); //might be the source of the errors, I just used this.repaint over in grid 
+			//gameGrid.set_Score(gameGrid.get_Score()-1); //should only run 3 times, its hard coded to start at 3 for now
+		}
+		showOutro();
+	}
+	private static void showIntro(){
+		System.out.println("Welcome");
+		
+	}
+	private static void showOutro(){
+		System.out.println("Game over");
+		
+	}
+}

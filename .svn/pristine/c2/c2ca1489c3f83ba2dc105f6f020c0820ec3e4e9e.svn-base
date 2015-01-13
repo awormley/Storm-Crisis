@@ -1,0 +1,112 @@
+import java.awt.event.MouseEvent;
+import java.awt.event.MouseListener;
+
+public class Grid_Mouse_Listener implements MouseListener {
+
+	int x = 0;
+	int y = 0;
+	int operation = 9;
+	int readyToOutput = 0;
+	Grid gameGrid;
+	
+	public Grid_Mouse_Listener(Grid g){
+		gameGrid = g;
+	}
+	
+	public int getX(){
+		return this.x;
+	}
+	public int getY(){
+		return this.y;
+	}
+	
+	
+	@Override
+	public void mouseClicked(MouseEvent e) {
+		gameGrid.splash();
+		
+		int actualX = e.getXOnScreen();
+		int actualY = e.getYOnScreen();
+		//System.out.println("Actual click at " + actualX + " " + actualY);
+		int gridX = actualX -18;  //
+		int gridY = actualY -171;
+
+		//these offsets need to be played with theyre not exactly right now, clicking top left quadrants of tiles works best.
+		int j = (gridY-(gridY % 64))/64;
+		int i = (gridX-(gridX % 64))/64;
+
+		if(actualY >= 45 && actualY <=170 ){
+			if(actualX >50 && actualX <=185){
+				//System.out.println("Menu button 1 hit");
+				operation = 0;
+			}
+				
+			else if(actualX >185 && actualX <=315){
+				//System.out.println("Menu button 2 hit");
+				operation = 1;
+			}
+
+			else if(actualX >315 && actualX <=445){
+				//System.out.println("Menu button 3 hit");
+				operation = 2;
+			}
+
+			else if(actualX >445 && actualX <=565){
+				//System.out.println("Menu button 4 hit");
+				operation = 3;
+			}
+			else if(actualX >565 && actualX <=690){
+				//System.out.println("Menu button 5 hit");
+				operation = 4;
+			}
+		}
+		else if(actualX >= 7 && actualX <= 903 && actualY >= 100 && actualY <= 742){
+			//clicked somewhere on grid 
+			readyToOutput = 1;
+			x = i;
+			y = j;
+		}
+		else{ //clicked somwhere else, neither on menu or grid
+			//x = 99;
+			//y = 99; //when called its checked for these vals meaning bad click
+			//operation = 9; //9 is no operation
+		}
+
+	}
+
+	@Override
+	public void mouseEntered(MouseEvent arg0) {
+		
+	}
+
+	@Override
+	public void mouseExited(MouseEvent arg0) {
+		
+	}
+
+	@Override
+	public void mousePressed(MouseEvent arg0) {
+		
+	}
+
+	@Override
+	public void mouseReleased(MouseEvent arg0) {
+		
+	}
+	
+	public int[] talkToGrid(Grid g){
+		int[] info = new int[4];
+		info[0] = x;
+		info[1] = y;
+		info[2] = operation;
+		info[3] = readyToOutput;
+		
+		return info;
+	}
+	public void confirmDone(){
+	//	System.out.println("Output bit reset");
+		readyToOutput = 0;
+	}
+
+	
+}

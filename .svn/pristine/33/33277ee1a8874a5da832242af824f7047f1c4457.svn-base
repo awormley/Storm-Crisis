@@ -1,0 +1,109 @@
+import java.sql.Time;
+import java.util.ArrayList;
+import java.awt.Color;
+import java.awt.Graphics;
+import java.util.Random;
+import javax.swing.JFrame;
+import javax.swing.JPanel;
+
+public class Grid extends JPanel {
+	public int numButterflies;
+	public int numAnimals;
+	
+	public int topMargin = 128;
+	public int leftMargin = 50;
+	public int numTilesX = 14;
+	public int numTilesY = 10;
+	public Grid_Type background[][] = new Grid_Type[numTilesX][numTilesY]; //for the time being hard coded to 20 by 20.
+	public ArrayList<Drawable> foreground;
+	private Time Clock;
+	private int[] runoff_Tolerance; //0 north, 1 east, 2 south, 3 west
+	private int score = 3;
+	public int grid_Height;
+	public int grid_Width;
+	
+	
+	public void set_Score(int c){
+		score = c;
+	}
+	
+	
+	public int get_Score(){
+			return score;
+	}
+	
+	public void paint(Graphics g){
+		for(int i = 0; i < numTilesX; i++){
+			for(int j = 0; j<numTilesY; j++){
+				g.drawImage(background[i][j].getTile(), i * 64 + leftMargin, j * 64 + topMargin,  this); 
+			}
+		}
+	}
+	public void draw_Background(){
+		
+	}
+	
+	public void draw_Foreground(Graphics g){
+		//g.draw(foreground);
+	}
+	
+	public void animate_Gutters(Graphics g){
+		
+	}
+	
+	public void draw_Water_Level(Graphics g){
+		
+	}
+	
+	public void addAnimal(){
+		numAnimals ++;
+		//Scarlet oak and spicebush will use this
+	}
+	public void addButterfly(){
+		numButterflies++;
+		//Butterfly weed and spicebush will use this
+		
+	}
+	
+	//index of runoff_Tolerance
+	public void decrement_Gutter(int gutter){
+		runoff_Tolerance[gutter]--;
+	}
+	
+	public void updateGrid(){
+		this.repaint();
+	}
+	
+	public Grid(){
+			//JFrame grid = new JFrame(); 
+			//want to randomize for initial tiles, rather than
+			// rows of grass or meadow
+			int choice;
+			Random r = new Random();
+			for(int i = 0; i<numTilesX; i++){
+				for(int j= 0; j<numTilesY; j++){
+					choice = r.nextInt(2);
+					
+					switch(choice){
+						case 0 : 
+							background[i][j] = new Grass_Tile();
+							break;
+						case 1:
+							background[i][j] = new Meadow_Tile();
+							break;						
+					} ///old way to make rows of tiles.
+					/*if(j%2 == 0)
+					background[i][j] = new Grass_Tile();
+					else
+					background[i][j] = new Meadow_Tile();
+					*/
+				}
+			}
+	    	
+	}
+	
+	
+	
+	
+	
+}

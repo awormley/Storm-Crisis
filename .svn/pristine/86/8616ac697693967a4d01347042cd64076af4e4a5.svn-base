@@ -1,0 +1,33 @@
+import java.awt.Color;
+import java.util.Vector;
+
+import javax.swing.JFrame;
+
+
+public class grid_Test {
+
+	/**
+	 * @param args
+	 */
+	public static void main(String[] args) {
+		// TODO Auto-generated method stub
+		JFrame gameWindow = new JFrame();
+		Grid gameGrid = new Grid();
+		gameGrid.grower.run();
+		Vector<Drawable> holder = new Vector(50);
+		
+		gameWindow.getContentPane().add(gameGrid);  //Only one of these two shows for some reason that I don't have time to investigate, switching lines around shows other one.
+	
+
+		gameWindow.setBackground(Color.gray);
+		gameWindow.setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
+		gameWindow.setSize(1195, 830); 
+		gameWindow.setVisible(true);
+		for (int i = 0; i<10;i++){
+			//gameGrid.grower.run();
+			System.out.println(gameGrid.grower.getState());
+			
+		}
+
+	}
+}

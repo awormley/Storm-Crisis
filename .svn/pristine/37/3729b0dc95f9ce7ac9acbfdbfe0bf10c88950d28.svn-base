@@ -1,0 +1,31 @@
+import java.awt.Image;
+import java.awt.image.BufferedImage;
+import java.io.File;
+import java.io.IOException;
+
+import javax.imageio.ImageIO;
+
+
+public class Grass_Tile extends Grid_Type{
+	public Grass_Tile(){
+		try {
+		//	tile = ImageIO.read(new File("img/Images/Placeholders/grassTile.png"));
+			tile = ImageIO.read(new File("img/Images/lightgrass.png"));
+			
+		} catch (IOException e) {
+			// TODO Auto-generated catch block
+			System.out.println("I COULDNT GET GRASSTILE IM TERRIBLE AT MY JOB");
+			e.printStackTrace();
+		}
+	}
+
+	@Override
+	public Image getTile() {
+		return tile;
+	}
+	
+	@Override
+	public String getName() {
+		return "Grass";
+	}
+}

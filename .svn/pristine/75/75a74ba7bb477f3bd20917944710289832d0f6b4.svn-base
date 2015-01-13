@@ -1,0 +1,133 @@
+import java.awt.Color;
+import java.awt.event.MouseEvent;
+import java.awt.event.MouseListener;
+import java.util.ArrayList;
+import java.util.Random;
+import java.util.Vector;
+import javax.swing.JComponent;
+import javax.swing.JFrame;
+
+
+public class RunMe  {
+	
+	public static void main(String[] args){
+		JFrame gameWindow = new JFrame();
+		Grid gameGrid = new Grid();
+		Grid_Mouse_Listener listener = new Grid_Mouse_Listener();
+		gameGrid.addMouseListener(listener);
+
+		gameWindow.getContentPane().add(gameGrid); 
+		gameWindow.setBackground(Color.gray);
+		gameWindow.setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
+		gameWindow.setSize(1195, 830); //magic numbers xy, need 1344 min to have 20x20 of the 64x64 tiles though
+		gameWindow.setVisible(true);
+	
+		showIntro(); //say hello for debug purposes
+		Random r = new Random();
+		
+		while (gameGrid.get_Score()>0 ){
+			try {
+    			Thread.sleep(200);
+    		} catch (InterruptedException e) {
+    			e.printStackTrace();
+    		}
+			if(gameGrid.starting){ //only one time
+				gameGrid.goPastStartScreen();
+			}
+			//on all of these testing lines the way we're spawning stuff via random is not final, just for now
+			if(!gameGrid.starting){
+			//next lines test functionality to grow and mow tiles
+			//if(r.nextInt(10) == 0)//calls grow on a random tile
+				gameGrid.grow_tile(r.nextInt(14), r.nextInt(10));
+			
+		  //if(r.nextInt(1000000) == 0) //this mows random tiles to simulate player mowing random tiles
+			//	gameGrid.mow_tile(r.nextInt(14), r.nextInt(10));
+			
+			if(r.nextInt(5) == 0) //testing spawning plants randomly
+				//right now with the +4 on the next line it only spawns invasives, without it it would spawn natives and invasives.
+				gameGrid.addPlant(r.nextInt(4)+4,r.nextInt(14),r.nextInt(10));
+			
+			if(r.nextInt(6) == 0)//calls addwater on one of the four spawn positions
+				gameGrid.addWater(r.nextInt(4));
+			
+			if(r.nextInt(4) == 0){   //this moves all of the waters and checks if they need to be removed
+				ArrayList<Drawable> killedWaters = new ArrayList<Drawable>(20);
+				int thisIndex;
+				for(Drawable d: gameGrid.foreground){ //for all of the drawable objects
+					thisIndex = d.move(gameGrid); //try to make it move- only waters can actually move but all have the method, others do nothing- also note that it returns an int
+					if(thisIndex!=9999)//it will return 9999 from all plants and living waters
+						killedWaters.add(gameGrid.foreground.get(thisIndex));	//instead of removing it here flag it to remove it later
+				}
+				if(killedWaters.size() > 0){ //doing it this way fixes the concurrent modification error
+					for(Drawable d: killedWaters){ //for all flagged waters
+						gameGrid.foreground.remove(d);	 
+					}
+				}
+				killedWaters.clear(); //clear out indexes of removed ones
+			}
+			
+			//to remove water if plant is by water
+			//if(r.nextInt(5) ==0){
+				for(Drawable p : gameGrid.foreground){
+					if(p.getClass().equals(Plant.class)){ //he said pretty clearly not to do things that check what class things are
+						int[] locArray = p.getLoc();
+						
+					}
+				}
+					
+			//}
+			
+			//if(r.nextInt(5) ==0){
+				
+				int[] info = listener.talkToGrid(gameGrid);
+				if(info[2] != 9 ){ //if operation isnt 9, where 9 indicates that no tool has been changed
+					gameGrid.setTool(info[2]);
+					if(info[1] != 99 && info[2] != 99 && info[3] == 1){ //checks if you clicked on the menu and that your state allows changing 
+							System.out.println("Tool set to " + info[2]);
+							switch(info[2]){
+							case(0):
+								gameGrid.addPlant(info[2],info[0],info[1]); //plants fern on square clicked
+								System.out.println("Planting type " + info[2] + " at " + info[0] + " " + info[1]);
+							break;
+							case(1):
+								gameGrid.addPlant(info[2],info[0],info[1]); //plants weed on square clicked
+								System.out.println("Planting type " + info[2] + " at " + info[0] + " " + info[1]);
+							break;
+							case(2):
+								gameGrid.addPlant(info[2],info[0],info[1]); //plants red plant on square
+								System.out.println("Planting type " + info[2] + " at " + info[0] + " " + info[1]);	
+								break;
+							case(3):
+								gameGrid.addPlant(info[2],info[0],info[1]); //plants yellow plant on square
+								System.out.println("Planting type " + info[2] + " at " + info[0] + " " + info[1]);
+							break;
+							case(4):
+								gameGrid.mow_tile(info[0],info[1]); //mows square
+								System.out.println("Mowing tile " + info[0] + " " + info[1]);
+						    break;
+					}
+				listener.confirmDone(); //tells listener to change the int that says it can do the above check
+				}
+				}
+			//}
+			}
+			
+			gameGrid.updateGrid();  //redraw
+			}
+		showOutro(); //say goodbye
+		gameGrid.goToEndScreen(); //draw final splash screen
+		gameGrid.updateGrid(); 
+	}
+	
+	private static void showIntro(){
+		System.out.println("Welcome");
+		
+	}
+	
+	private static void showOutro(){
+		System.out.println("Game over");
+		
+	}
+
+	
+}

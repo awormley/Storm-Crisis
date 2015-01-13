@@ -1,0 +1,148 @@
+import java.awt.Color;
+import java.awt.event.MouseEvent;
+import java.awt.event.MouseListener;
+import java.security.Timestamp;
+import java.util.ArrayList;
+import java.util.Calendar;
+import java.util.Date;
+import java.util.Random;
+import javax.swing.JFrame;
+
+
+public class RunMe  {
+	
+	public static void main(String[] args){
+		long clock = new Date().getTime();
+		Calendar cal;
+		long startTime = 0;
+		long currentTime = 0;
+		long deltaT = 0;
+		JFrame gameWindow = new JFrame();
+		Grid gameGrid = new Grid();
+		Grid_Mouse_Listener listener = new Grid_Mouse_Listener();
+		gameGrid.addMouseListener(listener);
+		int baseDelay = 150;
+
+		gameWindow.getContentPane().add(gameGrid); 
+		gameWindow.setBackground(Color.gray);
+		gameWindow.setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
+		gameWindow.setSize(1195, 830); //magic numbers xy, need 1344 min to have 20x20 of the 64x64 tiles though
+		gameWindow.setVisible(true);
+	
+		showIntro(); //say hello for debug purposes
+		Random r = new Random();
+		gameGrid.addWater(0);
+		while (gameGrid.get_Score()>0 ){
+			
+			cal = Calendar.getInstance();
+	
+			currentTime = cal.getTimeInMillis();
+			deltaT = currentTime - startTime;
+			
+			
+			//if(gameGrid.cycles % 100 == 0)
+			//	System.out.println("Cycles: " + gameGrid.cycles + " Ideal Time (s): " + ((gameGrid.cycles * baseDelay)/1000) + " Actual time (s) : " + deltaT/1000);
+			
+			try {
+				//System.out.println("Delay is " + (200-gameGrid.foreground.size()) ); //there are a max of 124 objects making minimum delay 76 ms
+    			Thread.sleep(baseDelay); //automatically adjusts delay for level of lag
+    		} catch (InterruptedException e) {
+    			e.printStackTrace();
+    		}
+			
+			if(gameGrid.checkStarting()){ //only one time
+				try {
+	    			Thread.sleep(5000);
+	    		} catch (InterruptedException e) {
+	    			e.printStackTrace();
+	    		}
+				
+				gameGrid.goPastStartScreen();
+				cal = Calendar.getInstance();
+				startTime = cal.getTimeInMillis();
+			}
+			//on all of these testing lines the way we're spawning stuff via random is not final, just for now
+			if(!gameGrid.checkStarting()){
+	
+			//calls grow on a random tile- grow function deals with invalid tiles itself
+				gameGrid.grow_tile(r.nextInt(14), r.nextInt(10));
+		
+			//if(r.nextInt(gameGrid.waterSpawnRate) == 0)//calls addwater on one of the four spawn positions
+			if(gameGrid.getCycles() % gameGrid.getWaterSpawnRate() == 0){
+				gameGrid.draw_text_grid();
+				gameGrid.addWater(r.nextInt(4));
+			}
+			
+		//	if(r.nextInt(gameGrid.waterMoveRate) == 0){   //this moves all of the waters and checks if they need to be removed
+			if(gameGrid.getCycles() % gameGrid.getWaterMoveRate()== 0){
+				
+				gameGrid.moveAllWaters();
+			}
+			
+			//to remove water if plant located near water
+			if(gameGrid.getCycles() % gameGrid.getWaterMoveRate() == 0){
+				gameGrid.removeWater();
+			}
+			
+			//to add animals to dynamic count on menu
+			//currently hardcoded animal spawn rate, chan change later
+			if(gameGrid.getCycles() % 20 == 0){
+				gameGrid.addAnimal();
+				gameGrid.addButterfly();
+				//System.out.println("animals: " + gameGrid.getNumAnimals());
+				//System.out.println("butterflies: " + gameGrid.getNumButterflies());
+			}
+			
+			
+				int[] info = listener.talkToGrid(gameGrid);
+				if(info[2] != 9 ){ //if operation isnt 9, where 9 indicates that no tool has been changed
+					gameGrid.setTool(info[2]);
+					if(info[1] != 99 && info[2] != 99 && info[3] == 1){ //checks if you clicked on the menu and that your state allows changing 
+							System.out.println("Tool set to " + info[2]);
+							switch(info[2]){
+							case(0):
+								gameGrid.addPlant(info[2],info[0],info[1]); //plants fern on square clicked
+								System.out.println("Planting type " + info[2] + " at " + info[0] + " " + info[1]);
+							break;
+							case(1):
+								gameGrid.addPlant(info[2],info[0],info[1]); //plants weed on square clicked
+								System.out.println("Planting type " + info[2] + " at " + info[0] + " " + info[1]);
+							break;
+							case(2):
+								gameGrid.addPlant(info[2],info[0],info[1]); //plants red plant on square
+								System.out.println("Planting type " + info[2] + " at " + info[0] + " " + info[1]);	
+								break;
+							case(3):
+								gameGrid.addPlant(info[2],info[0],info[1]); //plants yellow plant on square
+								System.out.println("Planting type " + info[2] + " at " + info[0] + " " + info[1]);
+							break;
+							case(4):
+								gameGrid.mow_tile(info[0],info[1]); //mows square
+								System.out.println("Mowing tile " + info[0] + " " + info[1]);
+						    break;
+					}
+				listener.confirmDone(); //tells listener to change the int that says it can do the above check
+				}
+				}
+			
+			//}
+			}
+			
+			gameGrid.updateGrid();  //redraw
+			}
+		System.out.println("Time lost unintentionally: " + (deltaT-(gameGrid.cycles * baseDelay))/1000);
+		
+		showOutro(); //say goodbye
+		gameGrid.goToEndScreen(); //draw final splash screen
+		gameGrid.updateGrid(); 
+	}
+	
+	private static void showIntro(){
+		System.out.println("Welcome");
+	}
+	private static void showOutro(){
+		System.out.println("Game over");
+	}
+
+	
+}

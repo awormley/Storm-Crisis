@@ -1,0 +1,23 @@
+import java.awt.Image;
+
+
+public class Menu {
+	public Tool[] Tool_Box;
+	private String Title;
+	public String[] Tool_Desc; 
+	public Image Background; 
+	public Image hide_Tab; 
+	public int Hide_Delay;
+	
+	public void Draw_Menu(){
+		
+	}
+	
+	public void Pause(){}
+	
+	public void Use_Element(){}
+	
+	public void checkHide(){}
+	
+
+}

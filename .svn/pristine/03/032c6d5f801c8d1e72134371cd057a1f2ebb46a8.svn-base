@@ -1,0 +1,431 @@
+import java.sql.Time;
+import java.util.ArrayList;
+import java.awt.Color;
+import java.awt.Graphics;
+import java.awt.event.ActionEvent;
+import java.awt.event.ActionListener;
+import java.awt.event.MouseEvent;
+import java.awt.event.MouseListener;
+import java.awt.event.MouseMotionListener;
+import java.awt.image.BufferedImage;
+import java.io.File;
+import java.io.IOException;
+import java.util.Random;
+
+import javax.imageio.ImageIO;
+import javax.swing.JFrame;
+import javax.swing.JPanel;
+
+public class Grid extends JPanel implements ActionListener, MouseListener {
+	public int numButterflies;
+	public int numAnimals; //number of Animals on the grid.
+	public int topMargin = 135; //128 is minimum here because of menu size
+	public int leftMargin = 8; //empty space between grid & screen
+	public int menutopMargin = 0;
+	public int menuleftMargin = 50;
+	public int numTilesX = 14; //number of columns
+	public int numTilesY = 10; //number of rows
+	public Grid_Type background[][] = new Grid_Type[numTilesX][numTilesY]; //for the time being hard coded to 14 by 10
+	public boolean occupiedSquares[][] = new boolean[numTilesX][numTilesY];
+	public ArrayList<Drawable> foreground = new ArrayList<Drawable>(25);
+	private Time Clock;
+	private int[] runoff_Tolerance; //0 north, 1 east, 2 south, 3 west
+	private int score = 100;
+	public int grid_Height;
+	public int grid_Width;
+	public growThread grower;
+	int toolUsed = 0;
+	boolean starting = true;
+	boolean ending = false;
+	private BufferedImage waterMeterHeader; 
+	private BufferedImage waterMeterEmpty;
+	private BufferedImage waterMeterFull;
+	private BufferedImage noLayover;
+	private BufferedImage Layover;
+	private BufferedImage scoreShower;
+	private BufferedImage womanOnRight;
+	private BufferedImage house;
+	private BufferedImage startScreen;
+	private BufferedImage endScreen;
+	
+
+	//These are columns for the default grid
+	//could make different ones for different difficulties, not hard to do.
+	public int[][] intGrid = {{0,0,0,3,0,0,0,0,0,0},{0,0,0,3,3,3,3,0,0,0},{0,0,0,0,0,0,3,0,0,0},{0,0,0,0,3,3,3,0,0,0},{0,0,0,0,3,0,0,0,0,0},{0,0,0,4,4,4,4,0,0,0},{0,3,3,4,4,4,4,0,0,0},{0,3,0,4,4,4,4,3,3,0},{0,3,0,4,4,4,4,0,3,0},{3,3,0,0,0,3,0,0,3,0},{0,0,0,0,0,3,3,0,3,0},{0,0,0,0,0,0,3,0,3,0},{0,0,0,3,3,3,3,0,3,3},{0,0,0,3,0,0,0,0,0,0}};
+	//once we have a default grid, 
+	public Menu menu = new Menu();
+	
+	public void change_Score(int c){
+		score += c;
+	}	
+	
+	public class growThread extends Thread {
+		//determines which grid_Tile grows, and when.
+	
+		public void run (){
+		Random r = new Random();
+			int x =  r.nextInt(10); //get a random x tile
+			int y = r.nextInt(14); //get a random y tile
+			//make a method for getting a new location? seems that this block
+			//will be used frequently.
+		//	 background[y][x].getClass()
+			System.out.println("<"+ x + ", "+ y+ ">");
+		}
+	}
+	
+	
+	public int get_Score(){
+		return score;
+	}
+	
+	public void paint(Graphics g){
+		if(starting)
+			g.drawImage(startScreen,100,200,this);
+		
+		if(ending)
+			g.drawImage(endScreen,100,200,this);
+		
+		if(!starting && !ending){
+		//drawing grid background
+			draw_Background(g);
+	    
+		//drawing menu
+			draw_selection_Layover(g);
+			draw_Menu(g);
+		//drawing water meter
+			draw_Water_Level(g);
+		//drawing house picture in middle
+			g.drawImage(house, 330, 330, this);
+			
+		//drawing grid foreground
+			draw_Foreground(g);
+		}
+		//draw_finalScreen(g);
+	}
+	
+	public void draw_Background(Graphics g){
+		for(int i = 0; i < numTilesX; i++){
+			for(int j = 0; j<numTilesY; j++){
+				g.drawImage(background[i][j].getTile(), i * 64 + leftMargin, j * 64 + topMargin,  this); 
+			}
+		}
+	}
+	
+	public void draw_Menu(Graphics g){
+		for(int i = 0; i < menu.numTools; i++){
+			g.drawImage(menu.Tool_Box[i].getIcon(), i * 128 + menuleftMargin, menutopMargin, this); 
+		}
+		//drawing woman on right	
+		g.drawImage(womanOnRight, 916, menutopMargin, this);	
+		
+		//drawing bird and butterfly icon	
+		g.drawImage(scoreShower, 750, menutopMargin, this);	
+			
+	}
+	
+	
+	public void draw_Foreground(Graphics g){
+		int thisloc[] = new int[2];
+		int offsetLoc[] = new int[2];
+		for(Drawable d: foreground){
+			thisloc = d.getLoc();
+			offsetLoc[0] = (thisloc[0]*64);
+			offsetLoc[1] = (thisloc[1]*64);
+			offsetLoc[0] += leftMargin+6;
+			offsetLoc[1] += topMargin+6;
+			//System.out.println("Drawing to foreground at  " + (thisloc[1]*64));
+			//g.drawImage(temp,offsetLoc[0],offsetLoc[1],this);
+			g.drawImage(d.getPicture(),offsetLoc[0],offsetLoc[1],this);
+		}
+	}
+	
+	public void draw_selection_Layover(Graphics g){
+		for(int i = 0; i < 5; i++){
+			if(toolUsed == i)		
+				g.drawImage(Layover, 50+(128*i), menutopMargin, this);
+			else				
+				g.drawImage(noLayover, 50+(128*i), menutopMargin, this);
+
+		}
+	}
+	
+	public void removeFromForeground(int x, int y){
+		int thisloc[] = new int[2];
+		Drawable killThis = null;
+		for(Drawable a: foreground){
+			thisloc = a.getLoc();
+			if(thisloc[0] == x && thisloc[1] == y)
+				killThis = a;
+		}
+		if(killThis != null){
+			occupiedSquares[x][y] = false;
+			foreground.remove(killThis);}
+	}
+	
+	public void animate_Gutters(Graphics g){
+		
+	}
+	
+	
+	public void draw_Water_Level(Graphics g){
+		//drawing water meter on right
+		
+		int  numEmpty = (int) score/3;
+		int  numFull = 33- numEmpty;
+		
+		g.drawImage(waterMeterHeader, 916, menutopMargin+270, this);
+		
+		for(int i = 0; i < numEmpty; i++){
+			
+				g.drawImage(waterMeterEmpty, 916, menutopMargin+320+(i*14), this);
+			
+		}
+		for(int i = 0; i < numFull; i++){
+				g.drawImage(waterMeterFull, 916, menutopMargin+320+(numEmpty *14) +(14*i), this);
+			
+		
+		}
+	}
+	
+	public void addAnimal(){
+		numAnimals ++;
+		//Scarlet oak and spicebush will use this
+	}
+	public void addButterfly(){
+		numButterflies++;
+		//Butterfly weed and spicebush will use this
+		
+	}
+	
+	public void addPlant(int type, int x, int y){
+		if(intGrid[x][y] <3 && x < 14 && y < 10 && occupiedSquares[x][y]!=true){
+		switch (type){
+		case 0:
+			foreground.add(new ChristmasFern(x,y));
+			break;
+		case 1:
+			foreground.add(new ButterflyWeed(x,y));
+			break;
+		case 2:
+			foreground.add(new ScarletOak(x,y));
+			break;
+		case 3:
+			foreground.add(new Spicebush(x,y));
+			break;
+		case 4:
+			foreground.add(new NorwayMaple(x,y));
+			break;
+		case 5:
+			foreground.add(new MaidenGrass(x,y));
+			break;
+		case 6:
+			foreground.add(new ButterflyBush(x,y));
+			break;
+		case 7:
+			foreground.add(new JapaneseBarberry(x,y));
+			break;
+		default:
+			System.out.println("Only types 0 thru 7 accepted");
+			break;
+		}
+		occupiedSquares[x][y] = true;
+		}
+		else{
+		//	System.out.println("Not a plantable square, is occupied or out of bounds");
+		}
+			
+	}
+	
+	//remove water from path if there is a plant nearby
+	public void removeWater(){
+		//loop through to check if water is currently nearby a native plant
+		//if it is, then remove/absorb it from grid
+		//need to keep track of x and y in grid where the plants are 
+		//keep track of where water is on grid
+		
+		for(int i = 0; i < numTilesX; i++){
+			for(int j = 0; j < numTilesY; j++){
+			
+				
+			}
+		}
+		
+	}
+	
+	
+	public void addWater(int pathNum){
+		switch(pathNum){
+		case(0):
+		foreground.add(new Water(0,8,5));
+		break;
+		case(1):
+		foreground.add(new Water(1,7,6));
+		break;
+		case(2):
+		foreground.add(new Water(2,5,4));
+		break;
+		case(3):
+		foreground.add(new Water(3,6,3));
+		break;
+		default:
+			break;
+		
+		}
+	}
+	
+	//index of runoff_Tolerance
+	public void decrement_Gutter(int gutter){
+		runoff_Tolerance[gutter]--;
+	}
+	public void setTool(int t){
+		toolUsed = t;
+	}
+	public void updateGrid(){
+		this.repaint();
+	}
+	public void grow_tile(int x, int y){ 
+		//change tile takes in the x,y position from the grid on screen
+		//and determines which background [i][j] tile was selected.
+		//then changes that tile to plantA
+
+		Random r = new Random(); //will be used to determine if we should spawn an invasive
+		switch(intGrid[x][y]){
+		case 0 : 
+			background[x][y] = new Meadow_Tile(); //someone figure out the memory implications of doing this and if we need to delete previous
+			intGrid[x][y] = 1;
+			break;
+		case 1:
+			background[x][y] = new Forest_Tile();
+			intGrid[x][y] = 2;
+			break;	
+		default:
+			//System.out.println("This doesn't grow");
+			break;
+		}
+	}
+	
+	public void mow_tile(int x,int y){
+		if(x>= 0 && x<14 && y>= 0 && y<10){
+			if(intGrid[x][y] <3){ //if it's grass meadow or forest not QOC or roof,
+				background[x][y] = new Grass_Tile();
+				intGrid[x][y] = 0;
+				removeFromForeground(x,y);
+			}
+			else{
+				//System.out.println("Can't mow here");
+			}
+		}
+	}
+	
+	public Grid(){
+			//JFrame grid = new JFrame(); 
+			//want to randomize for initial tiles, rather than
+			// rows of grass or meadow
+			grower = new growThread();
+			
+			try{
+				waterMeterHeader = ImageIO.read(new File("img/Images/water_meter_header.png"));
+				waterMeterEmpty = ImageIO.read(new File("img/Images/water_meter_empty.png"));
+				waterMeterFull = ImageIO.read(new File("img/Images/water_meter_full.png"));
+				noLayover = ImageIO.read(new File("img/Images/noLayover.png"));
+				Layover = ImageIO.read(new File("img/Images/selectLayover.png"));
+				scoreShower = ImageIO.read(new File("img/Images/Placeholders/scoreShower.png"));
+				house = ImageIO.read(new File("img/Images/Placeholders/housepicture.png"));
+				womanOnRight = ImageIO.read(new File("img/guyonright.png"));
+				startScreen = ImageIO.read(new File("img/Images/splash.png"));
+				endScreen = ImageIO.read(new File("img/Images/failscreen.png"));
+			} 
+			catch (IOException e) {
+				e.printStackTrace();
+			}
+			
+			//setting up grid from default hard coded way at the top, note that those are columns
+			for(int i = 0; i<numTilesX; i++){
+				for(int j= 0; j<numTilesY; j++){
+					//System.out.println("Made it to " + i + " " + j + "  " + intGrid[i][j]);
+				
+					switch(intGrid[i][j]){
+						case 0 : 
+							background[i][j] = new Grass_Tile();
+							break;
+						case 1:
+							background[i][j] = new Meadow_Tile();
+							break;	
+						case 2:
+							background[i][j] = new Forest_Tile();
+							break;
+						case 3:
+							background[i][j] = new Queue_Of_Care();
+							break;
+						case 4:
+							background[i][j] = new Roof_Tile();
+							break;
+						default:
+							background[i][j] = new Grass_Tile();
+							break;
+					}
+
+				}
+			}
+ 	
+	}
+	
+	//ends start screen
+	public void goPastStartScreen(){
+		starting = false;
+	}
+	//goes to end game screen
+	public void goToEndScreen(){
+		ending = true;
+	}
+
+
+	//MOUSE LISTENER METHODS
+	public void mouseDragged(MouseEvent e) {
+		// TODO Auto-generated method stub
+
+	}
+
+	public void mouseMoved(MouseEvent e) {
+		// TODO Auto-generated method stub
+		
+		
+	}
+
+	@Override
+	public void actionPerformed(ActionEvent arg0) {
+		// TODO Auto-generated method stub
+		
+	}
+
+	@Override
+	public void mouseClicked(MouseEvent arg0) {
+		// TODO Auto-generated method stub
+		
+	}
+
+	@Override
+	public void mouseEntered(MouseEvent arg0) {
+		// TODO Auto-generated method stub
+		
+	}
+
+	@Override
+	public void mouseExited(MouseEvent arg0) {
+		// TODO Auto-generated method stub
+		
+	}
+
+	@Override
+	public void mousePressed(MouseEvent arg0) {
+		// TODO Auto-generated method stub
+		
+	}
+
+	@Override
+	public void mouseReleased(MouseEvent arg0) {
+		// TODO Auto-generated method stub
+		
+	}
+
+}

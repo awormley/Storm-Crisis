@@ -1,0 +1,54 @@
+import java.sql.Time;
+import java.util.ArrayList;
+
+
+public class Grid extends {
+
+	public Grid_Type background[][];
+	public ArrayList<Drawable> foreground;
+	private Time Clock;
+	private int[] runoff_Tolerance; //0 north, 1 east, 2 south, 3 west
+	private int score;
+	public int grid_Height;
+	public int grid_Width;
+	
+	public void set_Score(int c){
+		score = c;
+	}
+	
+	
+	public int get_Score(){
+			return score;
+	}
+	
+	public void draw_Background(Graphics g){
+		
+	}
+	
+	public void draw_Foreground(Graphics g){
+		g.draw(foreground);
+	}
+	
+	public void animate_Gutters(Graphics g){
+		
+	}
+	
+	public void draw_Water_Level(Graphics g){
+		
+	}
+	
+	//index of runoff_Tolerance
+	public void decrement_Gutter(int gutter){
+		runoff_Tolerance[gutter]--;
+	}
+	
+	
+	public Grid(){
+			
+	}
+	
+	
+	
+	
+	
+}

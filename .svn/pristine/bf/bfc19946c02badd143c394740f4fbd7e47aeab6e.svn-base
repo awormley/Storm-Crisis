@@ -1,0 +1,15 @@
+import java.awt.Image;
+
+
+public class Queue_Of_Care extends Grid_Type{
+
+	@Override
+	public Image getTile() {
+		return tile;
+	}
+
+	@Override
+	public String getName() {
+		return "Queue of Care";
+	}
+}

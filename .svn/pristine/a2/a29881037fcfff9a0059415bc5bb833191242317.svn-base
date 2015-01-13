@@ -1,0 +1,38 @@
+import java.awt.Image;
+
+public class Menu{
+	
+	public int numTools = 5;
+	public Tool[] Tool_Box = new Tool[numTools];
+	public String[] Tool_Desc; 
+	public Image Background; 
+	public Image hide_Tab; 
+	public int Hide_Delay;
+	
+	
+	public Tool[] getToolBox(){
+		return Tool_Box;
+	}
+	
+	public int getNumTools(){
+		return numTools;
+	}
+	
+	public void Pause(){}
+	
+	public void Use_Element(){}
+	
+	public void checkHide(){}
+	
+	public Menu(){
+		//add tools using to array tool box
+		Tool_Box[1] = new ButterflyWeedTool();
+		Tool_Box[0] = new ChristmasFernTool();
+		Tool_Box[3] = new SpicebushTool();
+		Tool_Box[2] = new ScarletOakTool();
+		Tool_Box[4] = new Lawnmower();
+	}
+}
+	
+
+

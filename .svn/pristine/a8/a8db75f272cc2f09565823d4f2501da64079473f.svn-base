@@ -1,0 +1,36 @@
+import java.awt.image.BufferedImage;
+import java.io.File;
+import java.io.IOException;
+
+import javax.imageio.ImageIO;
+
+
+public class NorwayMaple extends Invasive{
+	BufferedImage[] id = new BufferedImage[5];
+	BufferedImage[] ea = new BufferedImage[5];
+	public NorwayMaple(int x, int y){
+		super(x,y);
+		
+		for(BufferedImage a: id){
+			try {
+				a = ImageIO.read(new File("img/Images/Placeholders/Invasive_C.png"));
+			} catch (IOException e) {
+				// TODO Auto-generated catch block
+				e.printStackTrace();
+			}
+		}
+		for(BufferedImage a: ea){
+			try {
+				a = ImageIO.read(new File("img/Images/Placeholders/Invasive_C.png"));
+			} catch (IOException e) {
+				// TODO Auto-generated catch block
+				e.printStackTrace();
+			}
+		}
+
+		setName("Norway Maple");
+		setup(2,1,0,id,ea);
+		
+	}
+	
+}

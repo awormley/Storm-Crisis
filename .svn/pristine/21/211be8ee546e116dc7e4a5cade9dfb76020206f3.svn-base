@@ -1,0 +1,26 @@
+import java.awt.image.BufferedImage;
+
+
+public abstract class Drawable {
+	private int xloc;
+	private int yloc;
+	public BufferedImage picture;
+	public Drawable(int x,int y){
+		xloc = x;
+		yloc = y;
+		
+	}
+	public void setLoc(int x, int y){
+		xloc = x;
+		yloc = y;
+		
+	}
+	public int[] getLoc(){
+		int[] location = {xloc,yloc};
+		return location;
+		
+	}
+	public void Draw(){
+		
+	}
+}

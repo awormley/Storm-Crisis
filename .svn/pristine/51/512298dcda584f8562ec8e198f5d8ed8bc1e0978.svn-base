@@ -1,0 +1,73 @@
+import java.awt.Image;
+import java.io.File;
+import java.io.IOException;
+
+import javax.imageio.ImageIO;
+
+
+public class Queue_Of_Care extends Grid_Type{
+	public Queue_Of_Care(int direction){
+		//0 is vertical 1 is horizontal
+		String file_location =  new String();
+		switch(direction)
+		{
+			case 0:
+				file_location = "img/Images/path.png";
+				break;
+			case 1: 
+				file_location = "img/Images/path_horiz.png";
+				break;
+			case 2:
+				file_location = "img/Images/path_corner.png";
+				break;
+		}
+		
+		try{
+			tile = ImageIO.read(new File(file_location));
+		} catch (IOException e) {
+			// TODO Auto-generated catch block
+			e.printStackTrace();
+		}
+		
+		/*if(direction == 0){
+		try {
+			//tile = ImageIO.read(new File("img/Images/Placeholders/pathTile.png"));
+			tile = ImageIO.read(new File("img/Images/path.png"));
+			
+		} catch (IOException e) {
+			// TODO Auto-generated catch block
+			e.printStackTrace();
+		}
+		}
+		else if(direction == 1){
+			try {
+				//tile = ImageIO.read(new File("img/Images/Placeholders/pathTile.png"));
+				tile = ImageIO.read(new File("img/Images/path_horiz.png"));
+				
+			} catch (IOException e) {
+				// TODO Auto-generated catch block
+				e.printStackTrace();
+			}
+		}
+		else if(direction == 2){
+			try {
+				//tile = ImageIO.read(new File("img/Images/Placeholders/pathTile.png"));
+				tile = ImageIO.read(new File("img/Images/path_corner.png"));
+				
+			} catch (IOException e) {
+				// TODO Auto-generated catch block
+				e.printStackTrace();
+			}
+		}
+		*/
+	}//end of constructor
+	@Override
+	public Image getTile() {
+		return tile;
+	}
+
+	@Override
+	public String getName() {
+		return "Queue of Care";
+	}
+}

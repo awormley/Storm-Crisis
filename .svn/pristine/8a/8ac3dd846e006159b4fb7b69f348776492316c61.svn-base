@@ -1,0 +1,8 @@
+
+public class Lawnmower extends Tool {
+
+	
+	public void mowSquare(){}
+	
+	
+}

@@ -1,0 +1,7 @@
+
+public class Planting_Tool extends Tool {
+	public Native[] coices;
+	
+	public void plantThis(){}
+	
+}

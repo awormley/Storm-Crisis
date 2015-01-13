@@ -1,0 +1,151 @@
+import java.awt.image.BufferedImage;
+import java.io.File;
+import java.io.IOException;
+import java.awt.image.BufferedImage;
+import java.awt.Color;
+import java.awt.Graphics;
+import javax.imageio.ImageIO;
+public class Water extends Drawable{
+	
+	//object class for every water enemy, has functions to move itself along board and change things on grid to tell it has moved
+	
+	private int size;
+	private int direction; //0 east 1 south 2 west 3 north- matches up to one of four images loaded 
+	BufferedImage directionImages[] = new BufferedImage[4];
+	BufferedImage splashImage; 
+	boolean dead = false;
+	boolean moved = false;
+	
+	public Water(int dir, int x, int y){
+		super(x,y);
+		setName("Water");
+		
+		size = 10; //default size subject to change
+		direction = dir; //0 E, 1 S, 2 W, 3 N
+		try {
+			splashImage = ImageIO.read(new File("img/Images/Placeholders/WaterEnemy/WaterEnemySplash.png"));
+		} catch (IOException e) {
+			e.printStackTrace();
+		}
+		try {
+			directionImages[0] = ImageIO.read(new File("img/Images/Placeholders/WaterEnemy/WaterEnemyRight1.png"));
+		} catch (IOException e) {
+			e.printStackTrace();
+		}
+		try {
+			directionImages[1] = ImageIO.read(new File("img/Images/Placeholders/WaterEnemy/WaterEnemyDown1.png"));
+		} catch (IOException e) {
+			e.printStackTrace();
+		}
+		try {
+			directionImages[2] = ImageIO.read(new File("img/Images/Placeholders/WaterEnemy/WaterEnemyLeft1.png"));
+		} catch (IOException e) {
+			e.printStackTrace();
+		}
+		try {
+			directionImages[3] = ImageIO.read(new File("img/Images/Placeholders/WaterEnemy/WaterEnemyUp1.png"));
+		} catch (IOException e) {
+			e.printStackTrace();
+		}
+		
+	}
+	
+	public int move(Grid g){
+		moved = false;
+		if(!dead){ //don't move if dead
+		int prevLoc[] = getLoc(); //save location before moving and have another for after the move
+		int loc[] = getLoc();
+		if(direction == 0){ //if going right
+			if(checkSquare(1,0,g)){ //check square to right
+				setLoc(loc[0]+1,loc[1]);
+			}
+			else if(checkSquare(0,1,g)){ //check square below
+				setLoc(loc[0],loc[1]);
+				direction = 1;}
+			else if(checkSquare(0,-1,g)) {//check square above
+				setLoc(loc[0],loc[1]);
+				direction = 3;}
+		}	
+		else if(direction == 1){ //if going south
+			if(checkSquare(0,1,g)){ //check square below
+				setLoc(loc[0],loc[1]+1);
+			}
+			else if(checkSquare(-1,0,g)){ //check square to stage left
+				setLoc(loc[0],loc[1]);
+				direction = 2;}
+			else if(checkSquare(1,0,g)) {//check square to stage right
+				setLoc(loc[0],loc[1]);
+				direction = 0;}
+		}	
+		else if(direction == 2){ //if going west
+			if(checkSquare(-1,0,g)){ //check square to left
+				setLoc(loc[0]-1,loc[1]);
+			}
+			else if(checkSquare(0,1,g)){ //check square below
+				setLoc(loc[0],loc[1]);
+				direction = 1;}
+			else if(checkSquare(0,-1,g)) {//check square above
+				setLoc(loc[0],loc[1]);
+				direction = 3;}
+		}	
+		else if(direction == 3){ //if going north
+			if(checkSquare(0,-1,g)){ //check square above
+				setLoc(loc[0],loc[1]-1);
+			}
+			else if(checkSquare(-1,0,g)){ //check square to stage left
+				setLoc(loc[0],loc[1]);
+				direction = 2;}
+			else if(checkSquare(1,0,g)) {//check square to stage right
+				setLoc(loc[0],loc[1]);
+				direction = 0;}
+		}	
+		
+		loc = getLoc(); //refresh location
+		if(moved){ //this NEEDS to be before the next if block- if not then it will undo the change made by splash on the boolean grid
+			g.setOccupiedSquares(false, prevLoc[0], prevLoc[1]); //mark its previous location as unoccupied
+			g.setOccupiedSquares(true, loc[0], loc[1]); //and current location as occupied
+		}
+		if((loc[0] == 0 && loc[1] == 3 ) || (loc[0] == 9 && loc[1] == 0) || (loc[0] == 13 && loc[1] == 3) || (loc[0] == 12 && loc[1] == 9)){
+			splash(g); //if it's on the end of a path then change animation to a puddle and mark it for death
+		}
+		
+		return 9999; //this indicates it's not to be removed
+		}
+		
+		else{ //if marked as dead,
+			return(g.foreground.indexOf(this)); //returns the index if it should die
+		}
+		
+		
+	}
+	private boolean checkSquare(int dx, int dy, Grid g){ //this is used by the move function to let it see if a square is a candidate to be moved to
+		//dx and dy are change in x and change in y- usually -1, 0 or 1. Potentially we could have fast waters that skip 2 or more squares ahead.
+		//Some could even jump over bad squares in that direction, just giving it a 5 would do that, to make it move fast but only with a clear path youd need to check all between with this
+		int loc[] = getLoc(); //grab its location
+		if((loc[0] + dx) < 14 && (loc[0] + dx )>-1 && (loc[1] + dy) < 10 && (loc[1] + dy) >-1){ //check that the square it wants to move to is in bounds before passing that to other checks
+			if(g.occupiedSquares[loc[0]+dx][loc[1]+dy] == false){ //if nothing is there
+				if(g.intGrid[loc[0]+dx][loc[1]+dy] == 3 || g.intGrid[loc[0]+dx][loc[1]+dy] == 5 || g.intGrid[loc[0]+dx][loc[1]+dy] == 6){ //and the square is a path
+					moved = true; //mark that it moved
+					return true; //and allow it to move
+				}
+			}
+		}
+		
+		return false; //if fails any of the above then it can't go there
+	}
+	
+	public void splash(Grid g){ //this function lets it change its picture to a puddle
+		int loc[] = getLoc(); 
+		g.setOccupiedSquares(false, loc[0], loc[1]); //mark its square as available to be moved to
+		dead = true; //mark it as dead so the next time its moved it will be taken off board
+		g.change_Score(-1); //decrement the score on grid
+	}
+	
+	public BufferedImage getPicture(){
+		if (!dead) //this is how we show the different images for the water enemies automatically
+			return directionImages[direction];
+		else
+			return splashImage;
+	}
+	
+}

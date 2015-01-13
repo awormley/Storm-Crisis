@@ -1,0 +1,36 @@
+import java.awt.image.BufferedImage;
+import java.io.File;
+import java.io.IOException;
+
+import javax.imageio.ImageIO;
+
+
+public class ButterflyBush extends Invasive{
+	BufferedImage[] id = new BufferedImage[5];
+	BufferedImage[] ea = new BufferedImage[5];
+	public ButterflyBush(int x, int y){
+		super(x,y);
+		
+		for(BufferedImage a: id){
+			try {
+				a = ImageIO.read(new File("img/Images/Placeholders/Invasive_B.png"));
+			} catch (IOException e) {
+				// TODO Auto-generated catch block
+				e.printStackTrace();
+			}
+		}
+		for(BufferedImage a: ea){
+			try {
+				a = ImageIO.read(new File("img/Images/Placeholders/Invasive_B.png"));
+			} catch (IOException e) {
+				// TODO Auto-generated catch block
+				e.printStackTrace();
+			}
+		}
+
+		setName("Butterfly Bush");
+		setup(2,2,0,id,ea);
+		
+	}
+	
+}

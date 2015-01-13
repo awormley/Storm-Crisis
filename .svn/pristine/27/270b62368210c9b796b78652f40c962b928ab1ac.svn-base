@@ -1,0 +1,64 @@
+import java.awt.image.BufferedImage;
+
+
+public abstract class Plant extends Drawable{
+	private String name;
+	private String[] description;
+	private int strength;
+	private int range;
+	private int cost;
+	private Grid_Type type;
+	private BufferedImage[] idle;
+	private BufferedImage[] eat;
+	private int instrument; //0,1,2,3 we'll see
+	private int size;
+	
+	public Plant(int x, int y){
+		super(x,y);
+	}
+	public String getName(){
+		return name;
+	}
+	public void setName(String n){
+		name = n;
+	}
+	public void setDesc(String[] desc){
+		description = desc;
+	}
+	public String[] getDesc(){
+		return description;
+	}
+	public int getCapacity(){ //capacity is changed by drink not directly
+		return strength;
+	}
+	public int getRange(){
+		return range;
+	}
+	public BufferedImage getIdleImg(){
+		return idle[0];  //for now, just display 1st one in array
+	}
+	public BufferedImage getEatImg(){
+		return eat[0];  //for now, just display 1st one in array
+	}
+	public int getInstrument(){
+		return instrument;
+	}
+	
+	public int getSize(){
+		return size;
+	}
+	public void setSize(int s){
+		size = s;
+	}
+	public void Drink(){
+		
+	}
+	public void setup(int str, int ran, int cos, BufferedImage[] id, BufferedImage[] ea){
+		strength = str;
+		range = ran;
+		cost = cos;
+		idle = id;
+		eat = ea;
+	}
+	
+}

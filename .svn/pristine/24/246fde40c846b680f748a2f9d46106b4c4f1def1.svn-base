@@ -1,0 +1,15 @@
+
+public class descriptionScreen {
+	
+public Image Description_Screen_background;
+	
+	public Image Description_Screen_water;
+	public Image plant_Desc_screen;
+	public Image[] plantDescriptions;
+		
+	public descriptionScreen(){}
+	
+	public void paintComponent(Graphics g){
+		
+	}
+}

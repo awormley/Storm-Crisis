@@ -1,0 +1,37 @@
+import java.awt.image.BufferedImage;
+import java.io.File;
+import java.io.IOException;
+
+import javax.imageio.ImageIO;
+
+
+public class ChristmasFern extends Native{
+	BufferedImage[] id = new BufferedImage[5];
+	BufferedImage[] ea = new BufferedImage[5];
+	public ChristmasFern(int x, int y){
+		super(x,y);
+		
+		for(int i = 0; i < 5; i++){
+			try {
+				id[i] = ImageIO.read(new File("img/Images/fern.png"));
+				//System.out.println("Got plant d");
+			} catch (IOException e) {
+				System.out.println("Couldnt find plant D");
+				// TODO Auto-generated catch block
+				e.printStackTrace();
+			}
+			try {
+				ea[i] = ImageIO.read(new File("img/Images/fern.png"));
+			} catch (IOException e) {
+				// TODO Auto-generated catch block
+				e.printStackTrace();
+			}
+		}
+
+
+		setName("Christmas Fern");
+		setup(3,3,3,id,ea);
+		
+	}
+	
+}

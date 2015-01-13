@@ -1,0 +1,8 @@
+
+public class Invasive extends Plant{
+	int type;
+	public Invasive(int x, int y, int plantType){
+		super(x,y);
+		type = plantType;
+	}
+}

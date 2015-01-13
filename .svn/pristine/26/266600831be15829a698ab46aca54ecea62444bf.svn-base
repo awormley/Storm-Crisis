@@ -1,0 +1,28 @@
+import java.awt.image.BufferedImage;
+import java.io.File;
+import java.io.IOException;
+import java.awt.image.BufferedImage;
+import java.awt.Color;
+import java.awt.Graphics;
+import javax.imageio.ImageIO;
+public class Water extends Drawable{
+	private int size;
+	private int direction;
+	public Water(int x, int y){
+		super(x,y);
+		size = 10; //default size subject to change
+		direction = 0; //0 N, 1 E, 2 S, 3 W
+		
+		try {
+		   // img = BufferedImage.read(new BufferedImage("img/sprites/puddle.png"));
+			BufferedImage img = ImageIO.read(new File("img/sprites/puddle.png"));
+		} 
+		catch (IOException e) {
+			e.printStackTrace();
+		}
+	}
+	public void draw(){
+		
+	}
+	
+}

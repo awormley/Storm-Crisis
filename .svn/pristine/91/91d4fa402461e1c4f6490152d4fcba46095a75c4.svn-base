@@ -1,0 +1,43 @@
+import java.awt.Color;
+
+import javax.swing.JFrame;
+
+
+public class RunMe {
+	
+	public static void main(String[] args){
+		//I WORK MOFUGA
+		JFrame gameWindow = new JFrame();
+		Grid gameGrid = new Grid();
+		Menu menu = new Menu();
+		
+		
+		//READ THE COMMENT ->
+		gameWindow.getContentPane().add(gameGrid);  //Only one of these two shows for some reason that I don't have time to investigate, switching lines around shows other one.
+		
+		gameWindow.getContentPane().add(menu);
+	//READ ->
+		
+		
+		gameWindow.setBackground(Color.gray);
+		gameWindow.setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
+		gameWindow.setSize(1200, 900); //magic numbers xy, need 1344 min to have 20x20 of the 64x64 tiles though
+		gameWindow.setVisible(true);
+		showIntro();
+		while (gameGrid.get_Score()>0 ){
+
+			menu.Draw_Menu();
+			gameGrid.updateGrid(); //might be the source of the errors, I just used this.repaint over in grid 
+			gameGrid.set_Score(gameGrid.get_Score()-1); //should only run 3 times, its hard coded to start at 3 for now
+		}
+		showOutro();
+	}
+	private static void showIntro(){
+		System.out.println("Welcome");
+		
+	}
+	private static void showOutro(){
+		System.out.println("Game over");
+		
+	}
+}

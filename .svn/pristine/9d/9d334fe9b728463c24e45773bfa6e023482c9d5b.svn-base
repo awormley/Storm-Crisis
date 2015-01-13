@@ -1,0 +1,60 @@
+import java.awt.Image;
+import java.awt.event.ActionEvent;
+import java.awt.event.ActionListener;
+import java.io.File;
+import java.io.IOException;
+
+import javax.imageio.ImageIO;
+import javax.swing.JButton;
+import javax.swing.JFrame;
+import javax.swing.JPanel;
+
+public class startScreen extends JPanel implements ActionListener{
+	
+	public Image Title_Screen_background;
+	public Image Title_Screen_rain;
+	public Image Title_Screen_house;
+	public Image DelDot_Engineer;
+	public JButton button;
+	public Image Description_Screen_water;
+	public Image plant_Desc_screen;
+	public Image[] plantDescriptions;
+	public int height = 600;
+	public int width = 800;
+		
+	public startScreen(){
+		try {
+    		Title_Screen_background = ImageIO.read(new File("title_background.png"));
+    		Title_Screen_rain = ImageIO.read(new File("Sprites/Droplet.png"));
+    		Title_Screen_house = ImageIO.read(new File("Houses/houselargeyellow.png"));
+    		Description_Screen_water = ImageIO.read(new File("Sprites/Drolet.png"));
+    	} catch (IOException e) {
+    		e.printStackTrace();
+    	}
+		
+		button = new JButton("Start");
+		button.addActionListener(this);
+		
+		//add(TitleScreen);
+		add(button);
+	}
+	
+	public void actionPerformed(ActionEvent e){
+		Object src = e.getSource();
+		if(src == button){
+			button = new JButton("Next");
+			button.addActionListener(this);
+			removeAll();
+			//add();
+			add(button);
+		}
+	}
+
+	public static void main(String[] args){
+		JFrame frame = new JFrame();
+		frame.add(new startScreen());
+		frame.setSize(800, 600);
+	    frame.setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
+	    frame.setVisible(true);
+	}
+}

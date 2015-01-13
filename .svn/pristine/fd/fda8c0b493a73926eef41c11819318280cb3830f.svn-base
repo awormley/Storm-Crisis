@@ -1,0 +1,12 @@
+import java.awt.Image;
+
+
+public class Animal {
+	
+	public Image picture;
+	
+	public Animal(){
+	
+	}
+
+}

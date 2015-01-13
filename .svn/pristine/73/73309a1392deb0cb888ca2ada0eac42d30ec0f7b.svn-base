@@ -1,0 +1,103 @@
+import java.awt.Color;
+import java.awt.event.MouseEvent;
+import java.awt.event.MouseListener;
+import java.util.ArrayList;
+import java.util.Random;
+import java.util.Vector;
+
+import javax.swing.JComponent;
+import javax.swing.JFrame;
+
+
+public class RunMe implements MouseListener {
+	
+	public static void main(String[] args){
+		JFrame gameWindow = new JFrame();
+		Grid gameGrid = new Grid();
+		
+		Vector<Drawable> holder = new Vector(50);
+
+		gameWindow.getContentPane().add(gameGrid); 
+		gameWindow.setBackground(Color.gray);
+		gameWindow.setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
+		gameWindow.setSize(1195, 830); //magic numbers xy, need 1344 min to have 20x20 of the 64x64 tiles though
+		gameWindow.setVisible(true);
+	
+		showIntro();
+		Random r = new Random();
+		
+		while (gameGrid.get_Score()>0 ){
+
+			//on all of these testing lines the way we're spawning stuff via random is not final, just for now
+			
+			//next lines test functionality to grow and mow tiles
+			if(r.nextInt(1000000) == 0)//calls grow on a random tile
+				gameGrid.grow_tile(r.nextInt(14), r.nextInt(10));
+			
+		//	if(r.nextInt(1000000) == 0) //this mows random tiles to simulate player mowing random tiles
+			//	gameGrid.mow_tile(r.nextInt(14), r.nextInt(10));
+			
+			if(r.nextInt(20000000) == 0) //testing spawning plants randomly
+				//right now with the +4 on the next line it only spawns invasives, without it it would spawn natives and invasives.
+				gameGrid.addPlant(r.nextInt(4)+4,r.nextInt(14),r.nextInt(10));
+			
+			if(r.nextInt(50000000) == 0)//calls addwater on one of the four spawn positions
+				gameGrid.addWater(r.nextInt(4));
+			
+			if(r.nextInt(5000000) == 0){   //this moves all of the waters and checks if they need to be removed
+				ArrayList<Drawable> killedWaters = new ArrayList(20);
+				int thisIndex;
+				for(Drawable d: gameGrid.foreground){
+					thisIndex = d.move(gameGrid);
+					if(thisIndex!=9999)//it will return 9999 from all plants and living waters
+						killedWaters.add(gameGrid.foreground.get(thisIndex));	
+				}
+				if(killedWaters.size() > 0){
+					for(Drawable d: killedWaters){
+						gameGrid.foreground.remove(d);	
+					}
+				}
+				killedWaters.clear();
+			}
+			
+			gameGrid.updateGrid(); 
+			}
+		showOutro();
+	}
+	private static void showIntro(){
+		System.out.println("Welcome");
+		
+	}
+	private static void showOutro(){
+		System.out.println("Game over");
+		
+	}
+	@Override
+	public void mouseClicked(MouseEvent e) {
+		// TODO Auto-generated method stub
+		int i = (e.getYOnScreen() - (e.getYOnScreen() % 64) -50 ) /64 ;
+		int j = (e.getXOnScreen() - (e.getXOnScreen() % 64) ) /64;
+		System.out.println("Grid position clicked is " + i+  ", " +j);
+		
+	}
+	@Override
+	public void mouseEntered(MouseEvent e) {
+		// TODO Auto-generated method stub
+		
+	}
+	@Override
+	public void mouseExited(MouseEvent e) {
+		// TODO Auto-generated method stub
+		
+	}
+	@Override
+	public void mousePressed(MouseEvent e) {
+		// TODO Auto-generated method stub
+		
+	}
+	@Override
+	public void mouseReleased(MouseEvent e) {
+		// TODO Auto-generated method stub
+		
+	}
+}

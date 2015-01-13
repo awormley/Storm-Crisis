@@ -1,0 +1,21 @@
+
+public class RunMe {
+	
+	public static void main(String[] args){
+		
+		Grid gameGrid = new Grid();
+		showIntro();
+		while (gameGrid.get_Score()!=0 ){
+			
+		}
+		showOutro();
+	}
+	private static void showIntro(){
+		System.out.println("Welcome");
+		
+	}
+	private static void showOutro(){
+		System.out.println("Game over");
+		
+	}
+}

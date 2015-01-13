@@ -1,0 +1,8 @@
+
+public class Native extends Plant{
+	int type;
+	public Native(int x, int y, int plantType){
+		super(x,y);
+		type = plantType;
+	}
+}

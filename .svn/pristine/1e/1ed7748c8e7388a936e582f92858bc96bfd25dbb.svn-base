@@ -1,0 +1,71 @@
+import java.awt.event.ActionEvent;
+import java.awt.event.ActionListener;
+import java.awt.event.MouseEvent;
+import java.awt.event.MouseListener;
+
+
+public class Grid_Mouse_Listener implements MouseListener {
+
+	int x = 0;
+	int y = 0;
+	int operation = 9;
+	
+	@Override
+	public void mouseClicked(MouseEvent e) {
+		// TODO Auto-generated method stub
+		int actualX = e.getXOnScreen();
+		int actualY = e.getYOnScreen()-140;
+		int j = (actualY-(actualY % 64))/64;
+		int i = (actualX-(actualX % 64))/64;
+		System.out.println("Actual click at " + actualX + " " + actualY);
+		if(i>=14 || i<0 || j>=10 || j<0){
+			x = 99;
+			y = 99;
+			System.out.println("Click not on grid");
+			operation = 9; //9 is no operation
+		}
+		else{
+			x = i;
+			y = j;
+			operation = 4; //0,1,2,3 are plants, 4 is mow
+		System.out.println("Grid position clicked is " + i+  ", " +j);
+		}
+	}
+
+	@Override
+	public void mouseEntered(MouseEvent arg0) {
+		// TODO Auto-generated method stub
+		
+	}
+
+	@Override
+	public void mouseExited(MouseEvent arg0) {
+		// TODO Auto-generated method stub
+		
+	}
+
+	@Override
+	public void mousePressed(MouseEvent arg0) {
+		// TODO Auto-generated method stub
+		
+	}
+
+	@Override
+	public void mouseReleased(MouseEvent arg0) {
+		// TODO Auto-generated method stub
+		
+	}
+	
+	public int[] talkToGrid(Grid g){
+		int[] info = new int[3];
+		info[0] = x;
+		info[1] = y;
+		info[2] = operation;
+		return info;
+	}
+
+	/**
+	 * @param args
+	 */
+	
+}
